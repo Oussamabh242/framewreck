@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+	<head>
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body class=" items-center justify-center h-screen bg-gray-100">
+		<h1 class="text-4xl font-bold text-blue-600">Hello</h1>
+		
+		<h1 class="font-bold text-red-600" >{{something}}</h1>
+		<div class="p-5">X</div>
+		{{wissem}}
+		<a href="/home">click</a>
+	</body>
+</html>
