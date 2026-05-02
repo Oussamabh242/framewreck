@@ -8,8 +8,12 @@ const char *end = "}}";
 
 char *read_view(char *path) {
   FILE *f = fopen(path, "rb");
-  if (!f)
-    return NULL;
+  if (!f){
+
+    perror("Seomthing went wrong reading the file");
+      return NULL;
+  }
+  
   if (fseek(f, 0, SEEK_END) != 0) {
     perror("Errro in fseek");
     fclose(f);
