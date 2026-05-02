@@ -8,12 +8,11 @@ const char *end = "}}";
 
 char *read_view(char *path) {
   FILE *f = fopen(path, "rb");
-  if (!f){
-
+  if (!f) {
     perror("Seomthing went wrong reading the file");
-      return NULL;
+    return NULL;
   }
-  
+
   if (fseek(f, 0, SEEK_END) != 0) {
     perror("Errro in fseek");
     fclose(f);
@@ -99,7 +98,6 @@ char *replace_vars(View *v) {
     memcpy(result + llen, e_var, vlen);
     memcpy(result + llen + vlen, view_str + e.end, rlen);
     result[llen + vlen + rlen] = '\0';
-
 
     free(view_str);
     view_str = result;

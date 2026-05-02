@@ -12,6 +12,8 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*.c"
 )
 
+find_package(SQLite3 REQUIRED)
+
 # Create executable
 add_executable(frame ${SOURCES})
 
@@ -20,6 +22,7 @@ target_include_directories(frame PRIVATE
     "${CMAKE_SOURCE_DIR}/src"
 )
 
+target_link_libraries(frame PRIVATE SQLite3::SQLite3)
 # Optional: better warnings (recommended)
 target_compile_options(frame PRIVATE
     -Wall -Wextra -Wpedantic

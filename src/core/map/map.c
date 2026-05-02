@@ -1,4 +1,5 @@
 #include "map.h"
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -23,7 +24,7 @@ void set(Map *m, char *key, char *val){
 		m->cap*=2;
 	}
 	for(size_t i; i < m->len ; i++){
-		if(strcmp(key, m->entries[i].key)){
+		if(strcmp(key, m->entries[i].key) == 0){
 			m->entries[i].value = val;
 			return;
 		}
