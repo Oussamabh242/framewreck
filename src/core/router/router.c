@@ -98,7 +98,7 @@ Response *route_request_and_handle(Router *router, Request *req) {
       Route *route = router->routes[i];
 
       for (int k = 0; k < m_res.paths_len; k++) {
-        set(req->headers, "userId", m_res.paths[k].value);
+        set(req->headers, m_res.paths[k].key, m_res.paths[k].value);
       }
 
       return route->f(req, route->args);
