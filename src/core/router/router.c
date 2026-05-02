@@ -71,10 +71,11 @@ void match_route(char *reg_path, char *inc_path, RouteMatchResult *res) {
     memcpy(reg_var, reg_path + reg_start, reg_end - reg_start);
     memcpy(inc_var, inc_path + inc_start, inc_end - inc_start);
     reg_var[reg_end - reg_start + 1] = '\0';
-    inc_var[inc_end - inc_start + 1] = '\0';
+    inc_var[inc_end - inc_start ] = '\0';
 
     res->paths[res->paths_len].key = reg_var;
     res->paths[res->paths_len++].value = inc_var;
+
     i = reg_end + 1;
     j = inc_end;
   }

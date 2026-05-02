@@ -1,5 +1,6 @@
 #include "core/server.h"
 #include "routes/home/home.h"
+#include "routes/users/users.h"
 #include <arpa/inet.h>
 #include <assert.h>
 #include <netinet/in.h>
@@ -22,7 +23,7 @@ int main() {
   
   Server *srv = new_server("127.0.0.1", 8000, 16 * 1024);
   declare_route(srv, "/", home_route_controller, NULL);
-  declare_route(srv, "/{userId}/name", home_route_controller, NULL);
+  declare_route(srv, "/users/{userId}", users_route_controller, db);
   run(srv);
   return 0;
 }

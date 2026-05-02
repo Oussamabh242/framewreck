@@ -1,15 +1,22 @@
 <!doctype html>
 <html>
-	<head>
-		<script src="https://cdn.tailwindcss.com"></script>
-	</head>
-	<body class=" items-center justify-center h-screen bg-gray-100">
-		<h1 class="text-4xl font-bold text-blue-600">Hello</h1>
-		
-		<h1 class="font-bold text-red-600" >{{something}}</h1>
-		<div class="p-5">X</div>
-		{{wissem}}
-		<a href="/home">click</a>
-		{{userId}}
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Home</title>
+  </head>
+  <body class="flex items-center justify-center h-screen bg-gray-100">
+
+    <div class="text-center">
+      <h1 class="text-3xl font-bold text-gray-800 mb-6">
+        Welcome Home
+      </h1>
+
+      <a href="/users/67"
+         class="px-6 py-3 bg-purple-600 text-white rounded-xl text-lg font-semibold hover:bg-purple-700 transition">
+        Go to User 67  (six -> seven )
+      </a>
+    </div>
+
+  </body>
 </html>
