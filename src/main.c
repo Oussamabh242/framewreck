@@ -1,6 +1,7 @@
 #include "map/map.h"
 #include "request/request.h"
 #include "request/response.h"
+#include "router/router.h"
 #include "strings/strings.h"
 #include "views/view.h"
 #include <arpa/inet.h>
@@ -12,8 +13,8 @@
 #include <unistd.h>
 
 const size_t MAX_BUFFER = 16 * 1024;
-void handle_request(int socket, char *buffer);
-Response *handle(Request *r);
+void handle_request(Router *r, int socket, char *buffer);
+Response *handle(Request *r, void *args);
 
 int main() {
 
@@ -37,6 +38,10 @@ int main() {
 
   char *buffer = malloc(sizeof(char) * MAX_BUFFER);
 
+  Router *r = new_router();
+  register_route(r, "/", handle, NULL);
+  register_route(r, "/home", handle, NULL);
+
   while (1) {
     int addrlen = sizeof(address);
     int new_socket =
@@ -47,7 +52,7 @@ int main() {
       continue;
     }
 
-    handle_request(new_socket, buffer);
+    handle_request(r, new_socket, buffer);
 
     close(new_socket);
   }
@@ -56,29 +61,28 @@ int main() {
   return 0;
 }
 
-void handle_request(int socket, char *buffer) {
+void handle_request(Router *r, int socket, char *buffer) {
 
   memset(buffer, 0, MAX_BUFFER);
   read(socket, buffer, MAX_BUFFER);
 
   SV string_v = sv(buffer);
 
-  Request r = req(string_v);
+  Request request = req(string_v);
 
-  Response *resp = handle(&r);
+  // routing logic
+
+  Response *resp = route_request_and_handle(r, &request);
+
   char *out = stringify_response(resp);
 
   destroy_res(resp);
-  destroy_req(&r);
+  destroy_req(&request);
 
   write(socket, out, strlen(out));
 }
 
-Response *handle(Request *r) {
-  if (strcmp(r->path, "/") != 0) {
-    Response *resp = res(NOT_FOUND, "Something went wrong");
-    return resp;
-  }
+Response *handle(Request *r, void *args) {
 
   Map *m = new_map();
   set(m, "something", "thingsome");

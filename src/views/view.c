@@ -48,72 +48,70 @@ char *replace_vars(View *v) {
 
   char *view_str = read_view(v->path);
 
+  char *temp_ptr = view_str;
+
   int i = 0;
-  int str_len = strlen(view_str);
-  while (i < str_len - 1) {
+  while (i < strlen(view_str) - 1) {
     int cond = view_str[i] == '{' && view_str[i + 1] == '{';
-    if (cond) {
-      Expression e = {0};
-      // advance cursor to the start of words
-      i += 2;
-      e.start = i;
-      while (view_str[i] != '}')
-        i++;
-      e.end = i;
-
-      char *var = malloc((e.end - e.start) + 2);
-      for (int k = e.start; k < e.end; k++) {
-        var[k - e.start] = view_str[k];
-      }
-      var[(e.end - e.start)] = '\0';
-      e.var = var;
-      e.start -= 2;
-      e.end += 2;
-
-      char *left = malloc(e.start);
-      int right_size = strlen(view_str) - e.end;
-      char *right = malloc(right_size);
-
-      strncpy(left, view_str, e.start);
-      view_str = view_str + e.end;
-      strncpy(right, view_str, right_size);
-
-      char *e_var = get(v->vars, e.var);
-      if (e_var == NULL) {
-        e_var = "undefined";
-      }
-
-      char *temp = malloc(strlen(left) + strlen(right) + strlen(e_var));
-      sprintf(temp, "%s%s%s", left, e_var, right);
-      view_str = temp;
-
-      exps[len] = e;
-      len++;
+    if (!cond) {
+      i++;
+      continue;
     }
-    i++;
-  }
-  // char *p = view_str;
-  // int acc_offset = 0;
-  // for (int i = 0; i < len; i++) {
-  //   Expression e = exps[i];
-  //   char *left = malloc(e.start);
-  //   int right_size = strlen(p) - e.end;
-  //   char *right = malloc(right_size);
-  //   strncpy(left, p, e.start);
-  //   p = p + e.end;
-  //   strncpy(right, p, right_size);
-  //
-  //   char *var = get(v->vars, e.var);
-  //   if (var == NULL) {
-  //     var = "undefined";
-  //   }
-  //
-  //   char *temp = malloc(strlen(left) + strlen(right) + strlen(var));
-  //   sprintf(temp, "%s%s%s", left, var, right);
-  //   p = temp;
-  // }
+    int open = i;
+    Expression e = {0};
+    // advance cursor to the start of words
+    i += 2;
+    e.start = i;
+    while (view_str[i] != '}')
+      i++;
+    e.end = i;
 
-  // printf("result ::\n%s\n", p);
+    char *var_name = malloc((e.end - e.start) + 2);
+    memcpy(var_name, view_str + e.start, e.end - e.start);
+    var_name[e.end - e.start] = '\0';
+
+    e.var = var_name;
+    e.start -= 2;
+    e.end += 2;
+    // int right_size = strlen(view_str) - e.end;
+    //
+    // char *left = malloc(e.start + 1);
+    // char *right = malloc(right_size + 1);
+    //
+    // strncpy(left, view_str, e.start);
+    // left[e.start] = '\0';
+    // view_str = view_str + e.end;
+    // strncpy(right, view_str, right_size);
+    // right[right_size] = '\0';
+
+    char *e_var = get(v->vars, e.var);
+    if (e_var == NULL) {
+      e_var = "undefined";
+    }
+
+    int llen = open, vlen = strlen(e_var), rlen = strlen(view_str) - e.end;
+    char *result = malloc(llen + vlen + rlen + 1);
+    memcpy(result, view_str, llen);
+    memcpy(result + llen, e_var, vlen);
+    memcpy(result + llen + vlen, view_str + e.end, rlen);
+    result[llen + vlen + rlen] = '\0';
+
+
+    free(view_str);
+    view_str = result;
+    i = llen + vlen;
+
+    // char *temp = malloc(strlen(left) + strlen(right) + strlen(e_var) + 1);
+    // sprintf(temp, "%s%s%s", left, e_var, right);
+    // view_str = temp;
+    //
+    // free(left);
+    // free(right);
+
+    // exps[len] = e;
+    // len++;
+    // i++;
+  }
 
   return view_str;
 }
